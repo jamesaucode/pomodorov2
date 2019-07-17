@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
 import Controls from "./Controls";
+import Heading from './Heading';
 import ArrowUp from "../../static/assets/arrowup.svg";
 import ArrowDown from "../../static/assets/arrowdown.svg";
 import { useInterval } from "../hooks/useInterval";
@@ -8,16 +9,13 @@ import { secondsToMS } from "../../utils/helper";
 
 const Wrapper = styled.div`
   align-items: center;
-  background: #8cc63e;
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
   border-radius: 5px;
   display: flex;
   flex-direction: column;
   height: 100%;
-  justify-content: space-around;
+  justify-content: center;
+  max-height: 300px;
   width: 100%;
-  max-height: 800px;
-  max-width: 600px;
 `;
 const SVGWrapper = styled.div`
   padding: 1em;
@@ -25,7 +23,7 @@ const SVGWrapper = styled.div`
     cursor: pointer;
   }
 `;
-const Heading = styled.h1`
+const StyledHeading = styled.h1`
   font-size: 3em;
   color: ${({ theme }) => theme.colors.primary};
 `;
@@ -36,15 +34,23 @@ const Input = styled.input`
 const TimeAndControls = styled.div`
   display: flex;
   align-items: center;
+  margin: 1rem 0;
 `;
 export default () => {
   const initTime = 1500;
+  const [rounds, setRounds] = useState(4);
   const [editing, setEditing] = useState(false);
   const [timeLeft, setTimeLeft] = useState(initTime);
   const [timeInput, setTimeInput] = useState();
-  const [delay, setDelay] = useState(1000);
+  const [delay, setDelay] = useState(false);
   useInterval(() => {
     setTimeLeft(timeLeft - 1);
+    if (timeLeft <= 0) {
+      setRounds(rounds - 1);
+      if (rounds === 0) {
+        alert('You have completed all rounds!');
+      }
+    }
   }, delay);
   const controls = {
     addMinute: () => {
@@ -59,6 +65,7 @@ export default () => {
       setDelay(delay ? null : 1000);
     },
     resetTimer: () => {
+      setDelay(false);
       setTimeLeft(initTime);
     },
   };
@@ -81,7 +88,7 @@ export default () => {
     const input = event.target.value;
     const inputLength = input.replace(/:/g, "").length;
     if (inputLength > 4) {
-      return ;
+      return;
     }
     const finalString =
       inputLength % 3 === 0 && inputLength !== 0
@@ -91,6 +98,7 @@ export default () => {
   };
   return (
     <Wrapper>
+      <Heading />
       <TimeAndControls>
         {editing ? (
           <Input
@@ -102,18 +110,18 @@ export default () => {
             placeholder={secondsToMS(timeLeft)}
           />
         ) : (
-          <>
-            <SVGWrapper onClick={controls.addMinute}>
-              <ArrowUp />
-            </SVGWrapper>
-            <Heading onClick={() => setEditing(true)}>
-              {secondsToMS(timeLeft)}
-            </Heading>
-            <SVGWrapper onClick={controls.minusMinute}>
-              <ArrowDown />
-            </SVGWrapper>
-          </>
-        )}
+            <>
+              <SVGWrapper onClick={controls.addMinute}>
+                <ArrowUp />
+              </SVGWrapper>
+              <StyledHeading onClick={() => setEditing(true)}>
+                {secondsToMS(timeLeft)}
+              </StyledHeading>
+              <SVGWrapper onClick={controls.minusMinute}>
+                <ArrowDown />
+              </SVGWrapper>
+            </>
+          )}
       </TimeAndControls>
       <Controls controls={controls} delay={delay} />
     </Wrapper>

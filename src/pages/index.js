@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
 import Timer from "../components/Timer";
 import { Global, css } from "@emotion/core";
 import { ThemeProvider } from "emotion-theming";
 
 const Wrapper = styled.div`
-	background: #FAFAFA;
+  background: #9acc58;
+  background: ${({ theme }) => theme.background.primary };
   box-sizing: border-box;
   display: flex;
   justify-content: center;
@@ -13,31 +14,57 @@ const Wrapper = styled.div`
   font-size: calc(0.35vw + 16px);
   margin: 0 auto;
   height: 100vh;
-`;
-const Heading = styled.h1`
-  font-size: 2em;
+  transition: 0.5s ease-out background;
 `;
 
-const theme = {
-	colors: {
-		primary: '#222'
-	}
+const THEMES = ['green', 'sassy'];
+
+const ThemeToggle = () => {
+  return (
+    <select>
+      {THEMES.map(theme => <option value={theme}>{theme}</option>)}
+    </select>
+  )
 }
 
-export default () => (
-  <ThemeProvider theme={theme}>
-    <Wrapper>
-      <Global
-        styles={css`
+const theme = {
+  green: {
+    colors: {
+      primary: '#222'
+    },
+    background: {
+      primary: '#9acc58'
+    }
+  },
+  sassy: {
+    colors: {
+      primary: '#fff'
+    },
+    background: {
+      primary: '#DB7093'
+    }
+  }
+}
+
+export default () => {
+  const [currentTheme, setCurrentTheme] = useState('green');
+  return (
+    <>
+      <select onChange={(event) => setCurrentTheme(event.target.value)}>
+        {THEMES.map(theme => <option value={theme}>{theme}</option>)}
+      </select>
+      <ThemeProvider theme={theme[currentTheme]}>
+        <Wrapper>
+          <Global
+            styles={css`
           html {
             font-family: Arial, Helvetica, sans-serif;
           }
-          * > div {
-          }
         `}
-      />
-      {/* <Heading>Pomodoro Timer</Heading> */}
-      <Timer />
-    </Wrapper>
-  </ThemeProvider>
-);
+          />
+          <Timer />
+        </Wrapper>
+      </ThemeProvider>
+    </>
+  );
+}

@@ -7,11 +7,12 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 const Button = styled.button`
-  border: none;
+  background: #4267B2;
   border-radius: 3px;
-  background: #666;
+  border: none;
   color: white;
   font-weight: bold;
+  margin: 0 10px;
   padding: 0.5em 1.5em;
 `;
 export default ({ controls, delay }) => {
