@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import Controls from "./Controls";
 import Heading from './Heading';
@@ -30,6 +30,7 @@ const StyledHeading = styled.h1`
 const Input = styled.input`
   font-size: 2em;
   color: ${({ theme }) => theme.colors.primary};
+  text-align: center;
 `;
 const TimeAndControls = styled.div`
   display: flex;
@@ -37,18 +38,24 @@ const TimeAndControls = styled.div`
   margin: 1rem 0;
 `;
 export default () => {
-  const initTime = 1500;
+  const initTime = 2;
   const [rounds, setRounds] = useState(4);
   const [editing, setEditing] = useState(false);
   const [timeLeft, setTimeLeft] = useState(initTime);
   const [timeInput, setTimeInput] = useState();
   const [delay, setDelay] = useState(false);
+  useEffect(() => {
+    document.title = delay ? `${secondsToMS(timeLeft)}` : 'Pomodoro Timer v2' ;
+  }, [delay,timeLeft])
   useInterval(() => {
     setTimeLeft(timeLeft - 1);
     if (timeLeft <= 0) {
       setRounds(rounds - 1);
+      setTimeLeft(initTime);
+      setDelay(false);
       if (rounds === 0) {
         alert('You have completed all rounds!');
+        setDelay(false);
       }
     }
   }, delay);
@@ -62,7 +69,8 @@ export default () => {
       }
     },
     toggleTimer: () => {
-      setDelay(delay ? null : 1000);
+      console.log(Date.now());
+      setDelay(delay ? null : 1001);
     },
     resetTimer: () => {
       setDelay(false);
@@ -70,7 +78,12 @@ export default () => {
     },
   };
   const handleOnBlur = event => {
-    const hms = event.target.value.split(":");
+    const trimmedInput = event.target.value.trim();
+    if (!trimmedInput) {
+      setEditing(false);
+      return ;
+    }
+    const hms = trimmedInput.split(":");
     let factor = Math.pow(60, hms.length - 1);
     let final = 0;
     for (let i = 0; i < hms.length; i++) {
@@ -85,15 +98,15 @@ export default () => {
     setTimeInput("");
   };
   const handleChange = event => {
-    const input = event.target.value;
-    const inputLength = input.replace(/:/g, "").length;
-    if (inputLength > 4) {
+    const trimmedInput = event.target.value.trim();
+    const trimmedInputLength = trimmedInput.replace(/:/g, "").length;
+    if (trimmedInputLength > 4) {
       return;
     }
     const finalString =
-      inputLength % 3 === 0 && inputLength !== 0
-        ? input.slice(0, inputLength - 1) + ":" + input.slice(-1)
-        : input;
+      trimmedInputLength % 3 === 0 && trimmedInputLength !== 0
+        ? trimmedInput.slice(0, trimmedInputLength - 1) + ":" + trimmedInput.slice(-1)
+        : trimmedInput;
     setTimeInput(finalString);
   };
   return (

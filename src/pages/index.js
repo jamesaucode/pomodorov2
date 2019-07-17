@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import Timer from "../components/Timer";
 import { Global, css } from "@emotion/core";
@@ -51,7 +51,7 @@ export default () => {
   return (
     <>
       <select onChange={(event) => setCurrentTheme(event.target.value)}>
-        {THEMES.map(theme => <option value={theme}>{theme}</option>)}
+        {THEMES.map((theme, index) => <option key={index} value={theme}>{theme}</option>)}
       </select>
       <ThemeProvider theme={theme[currentTheme]}>
         <Wrapper>

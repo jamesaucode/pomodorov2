@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 
 const StyledHeading = styled.h1`
-   color: ${({ theme }) => theme.colors.primary};
-   font-size: 2em; 
-`
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 3em;
+  padding: 1em;
+`;
 const StyledInput = styled.input`
-    color: ${({ theme }) => theme.colors.primary};
-    font-size: 2em;
-    padding: 0.25em;
-    text-align: center;
-`
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 3em;
+  padding: 0.25em;
+  text-align: center;
+`;
 const Heading = () => {
     const [editing, setEditing] = useState(false);
     const [text, setText] = useState('This is a heading');
